@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{626BE3F0-2996-4030-9D33-D3E9F5D76F0B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Plugins.Communication</RootNamespace>
+    <AssemblyName>Plugins.Communication</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Ethernet\SocketEvent\ConnectedEvent.cs" />
+    <Compile Include="Ethernet\SocketEvent\DisconnectionEvent.cs" />
+    <Compile Include="Ethernet\SocketEvent\LinkEvent.cs" />
+    <Compile Include="Ethernet\SocketEvent\ReceiveEvent.cs" />
+    <Compile Include="Ethernet\SocketEvent\SockListDisconnectionEvent.cs" />
+    <Compile Include="Ethernet\SocketEvent\SockListReceiveEvent.cs" />
+    <Compile Include="Ethernet\SocketList\SockList.cs" />
+    <Compile Include="Ethernet\SocketList\WebSocket.cs" />
+    <Compile Include="Ethernet\TCP\TCPClient.cs" />
+    <Compile Include="Ethernet\TCP\TcpServer.cs" />
+    <Compile Include="Ethernet\TCP\TcpServerEnum.cs" />
+    <Compile Include="Ethernet\UDP\UDPClient.cs" />
+    <Compile Include="Extension\Helpers\EnumHelper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VISA\DriveIO.cs" />
+    <Compile Include="FindDeviceService.cs" />
+    <Compile Include="VISA\Model\DeviceInfo.cs" />
+    <Compile Include="VISA\Model\FilterDescription.cs" />
+    <Compile Include="VISA\Visa32.cs" />
+    <Compile Include="VISA\VXI11\DataBase.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
