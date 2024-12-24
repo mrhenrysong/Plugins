@@ -53,13 +53,22 @@ namespace Plugins.Communication.Ethernet.UDP
         {
         }
 
-        public void Connect()
+        public void Connect(string ip = "")
         {
             if (!this.ConnectCondition)
             {
                 try
                 {
-                    IPEndPoint ied = new IPEndPoint(IPAddress.Any, this.Port);
+                    IPEndPoint ied;
+                    if (ip == "")
+                    {
+                        ied = new IPEndPoint(IPAddress.Any, this.Port);
+                    }
+                    else
+                    {
+                        ied = new IPEndPoint(IPAddress.Parse(ip), this.Port);
+                    }
+
                     this.UDP = new UdpClient(ied);
                     this.Socket = this.UDP.Client;
                     uint IOC_IN = 0x80000000;

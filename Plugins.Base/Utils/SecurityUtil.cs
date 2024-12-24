@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Plugins.Base.Utils
 {

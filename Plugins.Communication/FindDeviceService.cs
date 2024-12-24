@@ -130,21 +130,24 @@ namespace Plugins.Communication
             usbAddress = new List<string>();
             comAddress = new List<string>();
 
+        }
+
+        public void InitDriveIO()
+        {
             // 创建DriveIO对象
             driveIO = new DriveIO();
-
         }
 
         /// <summary>
         /// 发送找寻符合VXI-11\LXI协议设备命令，使用网络端口loaclPort
         /// </summary>
         /// <param name="loaclPort">本地端口</param>
-        public void ScanLANInstrucments(int loaclPort)
+        public void ScanLANInstrucments(int loaclPort, string ip = "")
         {
             lock (dataLocker)
             {
                 UDPClient client = new UDPClient(loaclPort, UdpTargetPort);
-                client.Connect();
+                client.Connect(ip);
                 client.ReceiveEve += UDPClient_ReceiveEve;
 
                 //VXI-11 portmap

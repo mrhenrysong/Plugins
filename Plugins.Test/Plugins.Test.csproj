@@ -51,6 +51,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Plugins.Base\Plugins.Base.csproj">
+      <Project>{ac09796e-388b-4737-aa4a-c162180bf8a7}</Project>
+      <Name>Plugins.Base</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Plugins.Communication\Plugins.Communication.csproj">
       <Project>{626be3f0-2996-4030-9d33-d3e9f5d76f0b}</Project>
       <Name>Plugins.Communication</Name>
