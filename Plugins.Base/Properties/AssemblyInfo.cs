@@ -13,6 +13,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright ©  2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+//当项目中增加SuppressIldasm属性后在使用ildasm.exe反编译代码，会提示:"受保护的模块 -- 无法进行反汇编"
+[assembly: SuppressIldasm()]
 
 // 将 ComVisible 设置为 false 会使此程序集中的类型
 //对 COM 组件不可见。如果需要从 COM 访问此程序集中的类型
