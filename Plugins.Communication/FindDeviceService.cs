@@ -6,6 +6,7 @@ using Plugins.Communication.VISA.VXI11;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 
@@ -42,10 +43,7 @@ namespace Plugins.Communication
         {
             get
             {
-                _AllInstrucments = new List<InstrucmentInfo>();
-                _AllInstrucments.AddRange(USBInstrucments);
-                _AllInstrucments.AddRange(LANInstrucments);
-                _AllInstrucments.AddRange(COMInstrucments);
+                _AllInstrucments = USBInstrucments.Concat(LANInstrucments).Concat(COMInstrucments).ToList();
 
                 return _AllInstrucments;
             }
@@ -138,6 +136,14 @@ namespace Plugins.Communication
             driveIO = new DriveIO();
         }
 
+        public void CloseDriveIO()
+        {
+            if (driveIO != null)
+            {
+                driveIO.Dispose();
+            }
+        }
+
         /// <summary>
         /// 发送找寻符合VXI-11\LXI协议设备命令，使用网络端口loaclPort
         /// </summary>
@@ -146,6 +152,8 @@ namespace Plugins.Communication
         {
             lock (dataLocker)
             {
+                LANInstrucments = new List<InstrucmentInfo>();
+
                 UDPClient client = new UDPClient(loaclPort, UdpTargetPort);
                 client.Connect(ip);
                 client.ReceiveEve += UDPClient_ReceiveEve;
@@ -194,6 +202,8 @@ namespace Plugins.Communication
         {
             lock (dataLocker)
             {
+                USBInstrucments = new List<InstrucmentInfo>();
+
                 usbAddress = driveIO.FindResources(FilterDescriptionType.USB);
                 GetInstrInfo(InstrucmentInterface.USB);
             }
@@ -203,6 +213,8 @@ namespace Plugins.Communication
         {
             lock (dataLocker)
             {
+                COMInstrucments = new List<InstrucmentInfo>();
+
                 comAddress = driveIO.FindResources(FilterDescriptionType.Serial);
                 GetInstrInfo(InstrucmentInterface.COM);
             }

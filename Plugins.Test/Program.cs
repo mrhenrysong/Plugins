@@ -26,7 +26,7 @@ namespace Plugins.Test
             //instance.ScanCOMInstrucments();
             //var comInstrs = instance.COMInstrucments;
 
-            //var allInstrs = instance.AllInstrucments;
+            var allInstrs = instance.AllInstrucments;
 
             Console.ReadKey();
         }
