@@ -16,7 +16,8 @@
 | :-----: | :------------------------------------------: |
 | 1.0.0.1 | Contains tcp/udp Visa(need ni-visa/Keysight) |
 | 1.0.0.2 | udpClient contains ipaddress.any or localip  |
-|         |                                              |
+| 1.0.1.1 | add sharedMemory                             |
+|         |                                  |
 
 
 
