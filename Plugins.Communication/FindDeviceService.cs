@@ -22,6 +22,7 @@ namespace Plugins.Communication
         private List<string> lanAddress;
         private List<string> usbAddress;
         private List<string> comAddress;
+        private List<string> gpibAddress;
 
         private const string UdpTargetIp = "255.255.255.255";
         private const int UdpTargetPort = 111;
@@ -43,7 +44,7 @@ namespace Plugins.Communication
         {
             get
             {
-                _AllInstrucments = USBInstrucments.Concat(LANInstrucments).Concat(COMInstrucments).ToList();
+                _AllInstrucments = USBInstrucments.Concat(LANInstrucments).Concat(COMInstrucments).Concat(GPIBInstrucments).ToList();
 
                 return _AllInstrucments;
             }
@@ -117,17 +118,35 @@ namespace Plugins.Communication
             }
         }
 
+        private List<InstrucmentInfo> _GPIBInstrucments;
+        /// <summary>
+        /// GPIB设备
+        /// </summary>
+        public List<InstrucmentInfo> GPIBInstrucments
+        {
+            get { return _GPIBInstrucments; }
+            set
+            {
+                if (_GPIBInstrucments != value)
+                {
+                    _GPIBInstrucments = value;
+                }
+
+            }
+        }
+
         public FindDeviceService()
         {
             AllInstrucments = new List<InstrucmentInfo>();
             LANInstrucments = new List<InstrucmentInfo>();
             USBInstrucments = new List<InstrucmentInfo>();
             COMInstrucments = new List<InstrucmentInfo>();
+            GPIBInstrucments = new List<InstrucmentInfo>();
 
             lanAddress = new List<string>();
             usbAddress = new List<string>();
             comAddress = new List<string>();
-
+            gpibAddress = new List<string>();
         }
 
         public void InitDriveIO()
@@ -198,6 +217,9 @@ namespace Plugins.Communication
             }
         }
 
+        /// <summary>
+        /// 扫描usb设备
+        /// </summary>
         public void ScanUSBInstrucments()
         {
             lock (dataLocker)
@@ -209,6 +231,9 @@ namespace Plugins.Communication
             }
         }
 
+        /// <summary>
+        /// 扫描COM设备
+        /// </summary>
         public void ScanCOMInstrucments()
         {
             lock (dataLocker)
@@ -217,6 +242,20 @@ namespace Plugins.Communication
 
                 comAddress = driveIO.FindResources(FilterDescriptionType.Serial);
                 GetInstrInfo(InstrucmentInterface.COM);
+            }
+        }
+
+        /// <summary>
+        /// 扫描GPIB设备
+        /// </summary>
+        public void ScanGPIBInstrucments()
+        {
+            lock (dataLocker)
+            {
+                GPIBInstrucments = new List<InstrucmentInfo>();
+
+                gpibAddress = driveIO.FindResources(FilterDescriptionType.GPIB);
+                GetInstrInfo(InstrucmentInterface.GPIB);
             }
         }
 
@@ -235,21 +274,19 @@ namespace Plugins.Communication
         {
             try
             {
-                List<string> addressStrs;
-                switch (instrucmentInterface)
+                // 使用字典来映射接口类型到对应的地址列表
+                var addressDictionary = new Dictionary<InstrucmentInterface, List<string>>()
                 {
-                    case InstrucmentInterface.USB:
-                        addressStrs = usbAddress;
-                        break;
-                    case InstrucmentInterface.LAN:
-                        addressStrs = lanAddress;
-                        break;
-                    case InstrucmentInterface.COM:
-                        addressStrs = comAddress;
-                        break;
-                    default:
-                        addressStrs = new List<string>();
-                        break;
+                    { InstrucmentInterface.USB, usbAddress },
+                    { InstrucmentInterface.LAN, lanAddress },
+                    { InstrucmentInterface.COM, comAddress },
+                    { InstrucmentInterface.GPIB, gpibAddress }
+                };
+
+                // 获取对应的地址列表，如果没有找到，则返回空列表
+                if (!addressDictionary.TryGetValue(instrucmentInterface, out var addressStrs))
+                {
+                    addressStrs = new List<string>();
                 }
 
                 foreach (var address in addressStrs)
@@ -280,40 +317,29 @@ namespace Plugins.Communication
                                     Description = text
                                 };
 
-                                //ADD INFO
-                                switch (instrucmentInterface)
+                                // 使用字典映射来简化存储设备信息的逻辑
+                                var instrumentListDictionary = new Dictionary<InstrucmentInterface, List<InstrucmentInfo>>()
                                 {
-                                    case InstrucmentInterface.USB:
-                                        // 检查是否已存在该信息，若不存在则添加
-                                        if (!USBInstrucments.Contains(info))
-                                        {
-                                            USBInstrucments.Add(info);
-                                        }
-                                        break;
-                                    case InstrucmentInterface.LAN:
-                                        // 检查是否已存在该信息，若不存在则添加
-                                        if (!LANInstrucments.Contains(info))
-                                        {
-                                            LANInstrucments.Add(info);
-                                        }
-                                        break;
-                                    case InstrucmentInterface.COM:
-                                        // 检查是否已存在该信息，若不存在则添加
-                                        if (!COMInstrucments.Contains(info))
-                                        {
-                                            COMInstrucments.Add(info);
-                                        }
-                                        break;
-                                    default:
-                                        break;
-                                }
+                                    { InstrucmentInterface.USB, USBInstrucments },
+                                    { InstrucmentInterface.LAN, LANInstrucments },
+                                    { InstrucmentInterface.COM, COMInstrucments },
+                                    { InstrucmentInterface.GPIB, GPIBInstrucments }
+                                };
 
+                                if (instrumentListDictionary.ContainsKey(instrucmentInterface))
+                                {
+                                    var instrumentList = instrumentListDictionary[instrucmentInterface];
+
+                                    // 检查是否已存在该信息，若不存在则添加
+                                    if (!instrumentList.Contains(info))
+                                    {
+                                        instrumentList.Add(info);
+                                    }
+                                }
                             }
                         }
                     }
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -321,6 +347,7 @@ namespace Plugins.Communication
                 Debug.WriteLine($"ex:{ex}");
             }
         }
+
 
         public static FindDeviceService GetInstance()
         {

@@ -15,18 +15,20 @@ namespace Plugins.Test
             int localPort = 1212;
             instance.ScanLANInstrucments(localPort, localIp);
             var lanInstrs = instance.LANInstrucments;
-            foreach (var lanInstr in lanInstrs)
-            {
-                Console.WriteLine($"{lanInstr.Address}  {lanInstr.Description}");
-            }
 
-            //instance.ScanUSBInstrucments();
-            //var usbInstrs = instance.USBInstrucments;
+            instance.ScanUSBInstrucments();
+            var usbInstrs = instance.USBInstrucments;
 
             //instance.ScanCOMInstrucments();
             //var comInstrs = instance.COMInstrucments;
 
             var allInstrs = instance.AllInstrucments;
+            instance.CloseDriveIO();
+
+            foreach (var Instr in allInstrs)
+            {
+                Console.WriteLine($"{Instr.Address}  {Instr.Description}");
+            }
 
             Console.ReadKey();
         }

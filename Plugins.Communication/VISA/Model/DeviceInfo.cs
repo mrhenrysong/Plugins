@@ -9,7 +9,8 @@
     {
         USB = 0,
         LAN = 1,
-        COM = 2
+        COM = 2,
+        GPIB = 3
     }
 
     public class InstrucmentInfo
