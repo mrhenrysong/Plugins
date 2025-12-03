@@ -223,11 +223,11 @@ namespace Plugins.Communication.VISA
 
         }
 
-        public string ReadResult()
+        public string ReadResult(int count = 1000)
         {
             lock (locker)
             {
-                int iCount = 1000;
+                int iCount = count;
                 byte[] bBuffer = new byte[iCount];
                 int iResult;
                 string sResult = "";
@@ -248,9 +248,9 @@ namespace Plugins.Communication.VISA
         /// 获取数据后转成double数组 封装供给频谱仪获取迹线数据使用
         /// </summary>
         /// <returns></returns>
-        public double[] ReadToDoubleArray()
+        public double[] ReadToDoubleArray(int count = 1000)
         {
-            string Temp = ReadResult();
+            string Temp = ReadResult(count);
             Temp = Temp.TrimEnd('\n').Trim('\"');
             var vTemp = Temp.Split(',');
             int iLength = vTemp.Length;
@@ -262,7 +262,7 @@ namespace Plugins.Communication.VISA
             return retDouble;
         }
 
-        public string Query(string writeFmt)
+        public string Query(string writeFmt, int count = 1000)
         {
             lock (locker)
             {
@@ -271,7 +271,7 @@ namespace Plugins.Communication.VISA
                 byte[] byteArray = System.Text.Encoding.Default.GetBytes(writeFmt);
                 Visa32.viWrite(vi, byteArray, byteArray.Length, out int iOutResult);
 
-                return ReadResult();
+                return ReadResult(count);
             }
 
         }
