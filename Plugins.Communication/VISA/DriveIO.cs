@@ -211,6 +211,14 @@ namespace Plugins.Communication.VISA
 
         }
 
+        public void WriteFromFile(string fileName, int countToWrite, ref int retCount)
+        {
+            lock (locker)
+            {
+                Visa32.viWriteFromFile(vi, fileName, countToWrite, ref retCount);
+            }
+        }
+
         public string Read()
         {
             lock (locker)
@@ -260,6 +268,14 @@ namespace Plugins.Communication.VISA
                 retDouble[i] = double.Parse(vTemp[i]);
             }
             return retDouble;
+        }
+
+        public void ReadToFile(string fileName, int countToRead, ref int retCount)
+        {
+            lock (locker)
+            {
+                Visa32.viReadToFile(vi, fileName, countToRead, ref retCount);
+            }
         }
 
         public string Query(string writeFmt, int count = 1000)
