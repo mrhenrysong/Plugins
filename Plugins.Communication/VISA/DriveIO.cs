@@ -2,6 +2,7 @@
 using Plugins.Communication.VISA.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Plugins.Communication.VISA
@@ -249,6 +250,27 @@ namespace Plugins.Communication.VISA
                     //} while (iResult >= Visa32.VI_SUCCESS && iResult != Visa32.VI_SUCCESS_TERM_CHAR);
                 } while (iResult > Visa32.VI_SUCCESS && iResult != Visa32.VI_SUCCESS_TERM_CHAR);
                 return sResult.ToString();
+            }
+        }
+
+        public byte[] ReadResultArray(int count = 1000)
+        {
+            lock (locker)
+            {
+                int iCount = count;
+                byte[] buffer = new byte[iCount];
+                int iResult;
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    do
+                    {
+                        iResult = Visa32.viRead(vi, buffer, iCount, out int iRetCount);
+                        ms.Write(buffer, 0, buffer.Length);
+
+                    } while (iResult > Visa32.VI_SUCCESS && iResult != Visa32.VI_SUCCESS_TERM_CHAR);
+                    return ms.ToArray();
+                }
+
             }
         }
 
